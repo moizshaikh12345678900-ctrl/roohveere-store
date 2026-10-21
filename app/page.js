@@ -4,12 +4,10 @@ import { useCallback, useMemo, useState } from "react";
 
 import { products } from "../lib/products";
 
-import Header from "../components/Header";
 import Hero from "../components/Hero";
 import ScentDuo from "../components/ScentDuo";
 import ProductSection from "../components/ProductSection";
-import Founder from "../components/Founder";
-import Footer from "../components/Footer";
+import Founder from "../components/Founder"
 import CartDrawer from "../components/CartDrawer";
 import OrderDrawer from "../components/OrderDrawer";
 import PerfumeQuiz from "../components/PerfumeQuiz";
@@ -107,10 +105,7 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-white font-sans text-[#35261e]">
-      <Header
-        cartCount={cartCount}
-        onOpenCart={openCart}
-      />
+   
 
       <Hero />
 
@@ -127,7 +122,6 @@ export default function HomePage() {
 
       <Founder />
 
-      <Footer />
 
       <PerfumeQuiz
         onAddToCart={addToCart}

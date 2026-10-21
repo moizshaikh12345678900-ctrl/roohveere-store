@@ -1,32 +1,57 @@
 "use client";
+
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { products } from "../lib/products";
 
 const money = (n) => `PKR ${Number(n).toLocaleString("en-PK")}`;
 
-export default function ProductSection({ onAddToCart = () => {}, onViewProduct = () => {} }) {
+export default function ProductSection({
+  onAddToCart = () => {},
+}) {
   const [category, setCategory] = useState("All");
 
   const categories = ["All", "For Her", "For Him"];
 
-  const filtered = useMemo(
-    () => (category === "All" ? products : products.filter((p) => p.category === category)),
-    [category]
-  );
+  const filtered = useMemo(() => {
+    return category === "All"
+      ? products
+      : products.filter((p) => p.category === category);
+  }, [category]);
 
   return (
-    <section className="bg-[#fff6f6] min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-4xl mx-auto">
-        {/* Category Tabs */}
-        <div className="flex items-center space-x-6 mb-8 text-sm font-medium">
+    <section
+      id="products"
+      className="min-h-screen scroll-mt-24 bg-[#fff6f6] px-4 py-12 font-sans sm:px-6 lg:px-8"
+    >
+      <div className="mx-auto max-w-6xl">
+        {/* Section heading */}
+        <div className="mb-8 text-center">
+          <p className="mb-2 text-xs uppercase tracking-[0.3em] text-[#8d1239]">
+            The Fragrance Collection
+          </p>
+
+          <h2 className="font-serif text-3xl text-[#35232b] sm:text-4xl">
+            Find Your Signature Scent
+          </h2>
+
+          <p className="mt-3 text-sm text-[#927f83]">
+            Discover a fragrance that tells your story.
+          </p>
+        </div>
+
+        {/* Category tabs */}
+        <div className="mb-8 flex flex-wrap justify-center gap-3">
           {categories.map((c) => (
             <button
+              type="button"
               key={c}
               onClick={() => setCategory(c)}
-              className={`px-5 py-2 rounded-md transition-colors ${
+              aria-pressed={category === c}
+              className={`rounded-full px-5 py-2.5 text-sm transition-all duration-300 ${
                 category === c
-                  ? "bg-black text-white"
-                  : "text-gray-600 hover:text-black bg-transparent"
+                  ? "bg-[#8d1239] text-white shadow-md"
+                  : "border border-[#ead6dc] bg-white text-[#6e515b] hover:border-[#8d1239]"
               }`}
             >
               {c}
@@ -34,50 +59,75 @@ export default function ProductSection({ onAddToCart = () => {}, onViewProduct =
           ))}
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Product grid */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p) => (
-            <div
+            <article
               key={p.id}
-              className="bg-[#fff0f3] border border-gray-300 rounded-lg overflow-hidden shadow-sm flex flex-col justify-between text-center p-0"
+              className="group overflow-hidden rounded-2xl border border-[#f0dfe3] bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(73,19,42,0.10)]"
             >
-              {/* Product Image Box */}
-              <div
-                className="w-full h-56 bg-gray-100 overflow-hidden cursor-pointer"
-                onClick={() => onViewProduct(p)}
+              {/* Image: clicking opens the actual product page */}
+              <Link
+                href={`/product/${encodeURIComponent(p.id)}`}
+                aria-label={`View details for ${p.name}`}
+                className="block"
               >
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                />
-              </div>
+                <div className="relative h-72 w-full overflow-hidden bg-[#fff0f3] sm:h-80">
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-contain object-center p-4 transition-transform duration-500 group-hover:scale-105 sm:p-6"
+                  />
 
-              {/* Product Details */}
-              <div className="p-5 flex flex-col items-center flex-grow justify-between">
-                <div>
-                  <h3
-                    onClick={() => onViewProduct(p)}
-                    className="font-serif text-lg font-bold text-gray-900 cursor-pointer hover:underline mb-1"
-                  >
-                    {p.name}
-                  </h3>
-                  <p className="text-xs font-semibold text-gray-800 mb-4">
-                    {money(p.price)}
-                  </p>
+                
                 </div>
+              </Link>
 
-                {/* Golden Gradient Add to Cart Button */}
-                <button
-                  onClick={() => onAddToCart(p)}
-                  className="w-full py-2.5 rounded-md text-white font-medium text-sm bg-gradient-to-r from-[#d8b073] to-[#c69a58] hover:opacity-95 transition-opacity shadow-sm"
+              {/* Product information */}
+              <div className="p-5 text-center">
+                <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[#ad8792]">
+                  {p.category}
+                </p>
+
+                <Link
+                  href={`/product/${encodeURIComponent(p.id)}`}
+                  className="font-serif text-xl text-[#35232b] transition-colors hover:text-[#8d1239]"
                 >
-                  Add to Cart
-                </button>
+                  {p.name}
+                </Link>
+
+                <p className="mb-4 mt-2 text-sm font-semibold text-[#8d1239]">
+                  {money(p.price)}
+                </p>
+
+                <div className="flex gap-2">
+                  <Link
+                    href={`/product/${encodeURIComponent(p.id)}`}
+                    className="flex flex-1 items-center justify-center rounded-lg border border-[#8d1239] py-3 text-xs font-semibold text-[#8d1239] transition-colors hover:bg-[#fff1f4]"
+                  >
+                    View Details
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={() => onAddToCart(p)}
+                    className="flex-1 rounded-lg bg-[#8d1239] px-2 py-3 text-xs font-semibold text-white transition-colors hover:bg-[#70102e]"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
+
+        {/* Empty category state */}
+        {filtered.length === 0 && (
+          <p className="py-12 text-center text-sm text-[#927f83]">
+            No fragrances found in this category.
+          </p>
+        )}
       </div>
     </section>
   );
