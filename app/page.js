@@ -31,16 +31,20 @@ export default function HomePage() {
   const subtotal = useMemo(
     () =>
       cart.reduce(
-        (total, item) => total + Number(item.price || 0) * item.qty,
+        (total, item) =>
+          total + Number(item.price || 0) * item.qty,
         0
       ),
     [cart]
   );
-const addToCart = useCallback((product) => {
+
+  const addToCart = useCallback((product) => {
     if (!product?.id) return;
 
     setCart((current) => {
-      const existing = current.find((item) => item.id === product.id);
+      const existing = current.find(
+        (item) => item.id === product.id
+      );
 
       if (existing) {
         return current.map((item) =>
@@ -54,17 +58,21 @@ const addToCart = useCallback((product) => {
     });
 
     setSelectedProduct(null);
-    setCartOpen(true); // <--- Yeh line add karne se item add hote hi cart drawer open ho jayega
+    setCartOpen(true);
   }, []);
 
   const updateQuantity = useCallback((productId, quantity) => {
     setCart((current) => {
       if (quantity <= 0) {
-        return current.filter((item) => item.id !== productId);
+        return current.filter(
+          (item) => item.id !== productId
+        );
       }
 
       return current.map((item) =>
-        item.id === productId ? { ...item, qty: quantity } : item
+        item.id === productId
+          ? { ...item, qty: quantity }
+          : item
       );
     });
   }, []);
@@ -98,8 +106,11 @@ const addToCart = useCallback((product) => {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white text-[#35261e] font-sans">
-      <Header cartCount={cartCount} onOpenCart={openCart} />
+    <main className="min-h-screen bg-white font-sans text-[#35261e]">
+      <Header
+        cartCount={cartCount}
+        onOpenCart={openCart}
+      />
 
       <Hero />
 
@@ -146,7 +157,9 @@ const addToCart = useCallback((product) => {
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) closeProduct();
+            if (event.target === event.currentTarget) {
+              closeProduct();
+            }
           }}
           role="presentation"
         >
@@ -193,6 +206,7 @@ const addToCart = useCallback((product) => {
                 <span className="text-[10px] font-bold uppercase tracking-[1.5px] text-[#a06c77]">
                   Fragrance notes
                 </span>
+
                 <p className="mt-2 text-sm text-[#5c493e]">
                   {selectedProduct.notes}
                 </p>
@@ -214,7 +228,6 @@ const addToCart = useCallback((product) => {
                 type="button"
                 onClick={() => {
                   addToCart(selectedProduct);
-                  setCartOpen(true);
                 }}
                 className="mt-3 min-h-11 w-full rounded-md border border-[#e8d9d4] px-5 py-3 text-sm font-medium text-[#684b40] transition hover:bg-[#f8f0eb]"
               >
@@ -223,25 +236,6 @@ const addToCart = useCallback((product) => {
             </div>
           </section>
         </div>
-      )}
-
-      {/* Floating subtotal shortcut */}
-      {cartCount > 0 && !cartOpen && !orderOpen && (
-        <button
-          type="button"
-          onClick={openCart}
-          className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-4 rounded-full border border-[#f0dce1] bg-white px-5 py-3 text-sm text-[#35261e] shadow-[0_8px_30px_rgba(55,20,32,0.15)] transition hover:-translate-y-0.5"
-        >
-          <span className="grid h-7 min-w-7 place-items-center rounded-full bg-[#8d1239] px-1 text-xs font-bold text-white">
-            {cartCount}
-          </span>
-
-          <span>View bag</span>
-
-          <strong className="text-[#8d1239]">
-            {money(subtotal)}
-          </strong>
-        </button>
       )}
     </main>
   );
